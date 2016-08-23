@@ -183,20 +183,19 @@ public class UberController {
             logger.info("Requesting product:{}", product_id);
             ResponseEntity<String> cabResponse = restTemplate.exchange(cabRequestUrl, HttpMethod.POST, httpEntity, String.class, Collections.emptyMap());
             RideResponse rideResponse = new Gson().fromJson(cabResponse.getBody(), RideResponse.class);
-            logger.info(cabResponse.getBody());
+            logger.info("Cab response:{}",cabResponse.getBody());
 
             logger.info("Changing state to available for requestid:{}", rideResponse.getRequest_id());
             String changeStatusUrl = "https://sandbox-api.uber.com/v1/sandbox/requests/" + rideResponse.getRequest_id();
             postpayload = new HashMap<>();
             postpayload.put("status", "accepted");
-            ResponseEntity<String> stateResponse = restTemplate.exchange(changeStatusUrl, HttpMethod.PUT, httpEntity, String.class, Collections.emptyMap());
-            logger.info(stateResponse.getBody());
+            ResponseEntity<String> stateChangeResponse = restTemplate.exchange(changeStatusUrl, HttpMethod.PUT, httpEntity, String.class, Collections.emptyMap());
+            logger.info("Status change response:{}", stateChangeResponse.getBody());
 
             logger.info("Fetching request details for requestid:{}", rideResponse.getRequest_id());
             String statusRequestUrl = "https://sandbox-api.uber.com/v1/requests/" + rideResponse.getRequest_id();
-            //restTemplate.getForObject(statusRequestUrl, )
-
-
+            ResponseEntity<String> statusResponse = restTemplate.exchange(statusRequestUrl, HttpMethod.GET, httpEntity, String.class, Collections.emptyMap());
+            logger.info("Status fetch response", statusResponse.getBody());
 
         }catch (Exception e) {
             logger.error("Error requesting ride", e);
@@ -207,7 +206,7 @@ public class UberController {
     public void flockEventCallbackHandler(HttpServletRequest request) throws Exception{
         FlockEventsHandlerClient eventsHandlerClient = new FlockEventsHandlerClient(eventHandler, Constants.APP_SECRET);
         eventsHandlerClient.Handle(request);
-        logger.info("Recieved flock event");
+        logger.info("Received flock event");
     }
 
     private class RideResponse{
