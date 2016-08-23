@@ -10,7 +10,7 @@ public class Availability {
         return times;
     }
 
-    private class Times{
+    public class Times{
         private String localized_display_name;
         private int estimate;
         private String displayName;
