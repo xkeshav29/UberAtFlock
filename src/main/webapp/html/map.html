@@ -25,6 +25,20 @@
 <!--map div-->
 <div id="map"></div>
 <script type="text/javascript">
+            var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
              $(document).ready(function(){
                 getLocation(); 
              });
@@ -37,9 +51,11 @@
                 //Add lat and lng values to a field that we can save.
                 var latitude = currentLocation.lat(); //latitude
                 var longitude = currentLocation.lng(); //longitude
+                console.log(getUrlParameter('flockEvent'));
+                console.log(getUrlParameter('flockValidationToken'));
                 console.log("latitude " + latitude + " longitude " + longitude);
                 $.ajax({
-                    url : 'http://01967a5e.ngrok.io/availability?lon=' + longitude +'&lat=' + latitude,
+                    url : 'https://8271fb9e.ngrok.io/availability?lon=' + longitude +'&lat=' + latitude + '&flockEvent=' + getUrlParameter('flockEvent'),
                     type : 'GET',
                     dataType: "jsonp",
                     success : function(result){

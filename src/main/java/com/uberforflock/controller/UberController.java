@@ -2,6 +2,8 @@ package com.uberforflock.controller;
 
 
 import co.flock.www.FlockEventsHandlerClient;
+import co.flock.www.JWTToken;
+import co.flock.www.model.JWT.JWTPayload;
 import co.flock.www.model.flockevents.SlashCommand;
 import com.google.gson.Gson;
 import com.uberforflock.dao.OauthCredentialDao;
@@ -134,9 +136,7 @@ public class UberController {
             String url = "https://api.uber.com/v1/estimates/time?start_latitude=" + lat + "&start_longitude=" + lon;
             logger.info("Getting availability for long {} and lat {}", lon, lat);
             HttpHeaders headers = new HttpHeaders();
-          //  headers.set("Authorization", "Token " + Constants.SERVER_TOKEN);
-            String accessToken = userAuthService.getAccessToken("kk");
-            headers.set("Authorization", "Token " + accessToken);
+            headers.set("Authorization", "Token " + Constants.SERVER_TOKEN);
             HttpEntity<String> entity = new HttpEntity<>(headers);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             Availability availability = new Gson().fromJson(response.getBody(), Availability.class);
@@ -148,10 +148,13 @@ public class UberController {
     }
 
     @RequestMapping(value = "/doaouth")
-    public ModelAndView doaouth(@RequestParam String flockValidationToken){
+    public ModelAndView doaouth(@RequestParam String flockValidationToken) throws Exception {
         try {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("oauth");
+            JWTPayload jwtPayload =  JWTToken.GetJWTPayload(flockValidationToken, "bd6928c7-9439-457b-b617-ab4e3fee0b30");
+            String oauthURL =  getAuthUrl(jwtPayload.getUserId());
+            modelAndView.addObject("oauthURL", oauthURL);
             return  modelAndView;
         }catch(Exception e){
             logger.error("Exception getting availability for flockEvent", e);
