@@ -141,7 +141,7 @@ public class UberController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             Availability availability = new Gson().fromJson(response.getBody(), Availability.class);
-            messageService.sendAvailabilityMessage(availability, new Gson().fromJson(flockEvent, SlashCommand.class));
+            messageService.sendAvailabilityMessage(lat, lon, availability, new Gson().fromJson(flockEvent, SlashCommand.class));
             logger.info(response.getBody());
         }catch(Exception e){
             logger.error("Exception getting availability for flockEvent {}", flockEvent);

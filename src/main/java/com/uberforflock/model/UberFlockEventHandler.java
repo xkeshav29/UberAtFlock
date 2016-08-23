@@ -46,7 +46,6 @@ public class UberFlockEventHandler implements FlockEventsHandler {
 
     @Override
     public void onPressButton(PressButton pressButton) {
-
     }
 
     @Override

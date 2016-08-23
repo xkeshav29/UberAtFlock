@@ -1,14 +1,14 @@
 package com.uberforflock.service;
 
 import co.flock.www.FlockApiClient;
+import co.flock.www.model.flockevents.PressButton;
 import co.flock.www.model.flockevents.SlashCommand;
 import co.flock.www.model.messages.Attachments.*;
 import co.flock.www.model.messages.FlockMessage;
 import co.flock.www.model.messages.Message;
 import com.uberforflock.dao.UserTokenDao;
 import com.uberforflock.model.Availability;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.uberforflock.model.Ride;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MessageService {
+
     @Autowired
     private UserTokenDao userTokenDao;
 
-    public void sendAvailabilityMessage(Availability availability, SlashCommand slashCommand) throws  Exception{
+    private void sendRideMessage(Ride ride, PressButton pressButton){
+
+    }
+
+    public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand) throws  Exception{
         String userToken = userTokenDao.getUserToken(slashCommand.getUserId());
         FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
 
