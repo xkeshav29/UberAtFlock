@@ -9,6 +9,8 @@ import co.flock.www.model.messages.Message;
 import com.uberforflock.dao.UserTokenDao;
 import com.uberforflock.model.Availability;
 import com.uberforflock.model.Ride;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +25,13 @@ public class MessageService {
     @Autowired
     private UserTokenDao userTokenDao;
 
-    private void sendRideMessage(Ride ride, PressButton pressButton){
+    private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
+
+    public void sendRideMessage(Ride ride, PressButton pressButton){
 
     }
 
-    public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand) throws  Exception{
+    public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand){
         String userToken = userTokenDao.getUserToken(slashCommand.getUserId());
         FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
 
@@ -80,6 +84,10 @@ public class MessageService {
 
         }
 
-        String id = flockApiClient.chatSendMessage(new FlockMessage(message));
+        try {
+            String id = flockApiClient.chatSendMessage(new FlockMessage(message));
+        }catch (Exception e){
+            logger.error("Error sending message", e);
+        }
     }
 }
