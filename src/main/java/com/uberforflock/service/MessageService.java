@@ -31,27 +31,30 @@ public class MessageService {
             String fontStyle = "font-family:Lucida Grande,Arial,sans-serif;font-size:14px;line-height:20px";
             sb.append(cssBody);
             sb.append("<div style=\"" + fontStyle + "\">");
-            sb.append("<table width=\"400\">");
+            sb.append("<table width=\"350\">");
             for (Availability.Times times : availability.getTimes()) {
-                sb.append("<tr><td><b>" + times.getLocalized_display_name() + "</b></td> <td>" + (times.getEstimate() / 60) + " minutes</td></tr>");
+                sb.append("<tr><td style=\"text-align: center;\"><img src=\"http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-ubergo.png\" alt=\"\" width=\"25\" height=\"25\" /></td><td><b>" + times.getLocalized_display_name() + "</b></td> <td>" + (times.getEstimate() / 60) + " minutes</td></tr>");
             }
             sb.append("</table>");
             sb.append("</div>");
             htmlView.setInline(sb.toString());
-            htmlView.setHeight(18 * availability.getTimes().size());
+            htmlView.setHeight(30 * availability.getTimes().size());
             View view = new View();
             view.setHtml(htmlView);
 
-            Button[] buttons = new Button[1];
-            Button button = new Button();
-            button.setIcon("http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberpool.png");
-            button.setName("Book "  + availability.getTimes().get(0).getLocalized_display_name());
-            button.setId(availability.getTimes().get(0).getProduct_id());
-            Action sendToAppService = new Action();
-            sendToAppService.addDispatchEvent();
-            button.setAction(sendToAppService);
+            int totalButtons = availability.getTimes().size() > 3 ? 3 : availability.getTimes().size();
 
-            buttons[0] = button;
+            Button[] buttons = new Button[totalButtons];
+            for(int i = 0 ; i < totalButtons ; i++) {
+                Button button = new Button();
+                button.setIcon("http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberpool.png");
+                button.setName("Book " + availability.getTimes().get(i).getLocalized_display_name());
+                button.setId(availability.getTimes().get(i).getProduct_id());
+                Action sendToAppService = new Action();
+                sendToAppService.addDispatchEvent();
+                button.setAction(sendToAppService);
+                buttons[i] = button;
+            }
 
             attachment.setButtons(buttons);
 
