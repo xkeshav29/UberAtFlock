@@ -7,7 +7,7 @@
     <style type="text/css">
         #map {
         width: 700px;
-        height: 500px;
+        height: 400px;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
@@ -15,12 +15,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <script src="https://apps-static.flock.co/js-sdk/0.1.0/flock.js"></script>
     <title>Uber App</title>
 </head>
 <body>
 
-<h1>Select your destination</h1>
+<h3>Select your destination</h3>
 <p>Click on a location on the map to select it. Drag the marker to change location.</p>
 <!--map div-->
 <div id="map"></div>
@@ -59,10 +59,10 @@
                     type : 'GET',
                     dataType: "jsonp",
                     success : function(result){
-                        alert('Done');
+                        flock.close();
                     },
                     error : function(){
-                        alert('Error');
+                       flock.close();
                     }
                 })
             }
