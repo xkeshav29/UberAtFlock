@@ -1180,3 +1180,25 @@ Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation: Data too long fo
 2016-08-23 14:04:34,581 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - {"times":[]} 
 2016-08-23 14:05:22,380 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64 and lat 12.96 
 2016-08-23 14:05:28,435 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - {"times":[{"localized_display_name":"uberPOOL","estimate":60,"display_name":"uberPOOL","product_id":"3eb15796-edd3-4297-80f1-02605442bb9e"},{"localized_display_name":"uberGO","estimate":60,"display_name":"uberGO","product_id":"db6779d6-d8da-479f-8ac7-8068f4dade6f"},{"localized_display_name":"POOL","estimate":60,"display_name":"POOL","product_id":"ed5e79f0-c124-4377-89eb-511cbdeb5fe2"},{"localized_display_name":"uberX","estimate":60,"display_name":"uberX","product_id":"0dfc35e0-b4be-49a1-b1bf-0bc7217e4b58"},{"localized_display_name":"uberXL","estimate":240,"display_name":"uberXL","product_id":"1cfdf145-9e9f-44d6-8f93-976e0252ca8d"}]} 
+2016-08-23 14:16:33,922 INFO bdvmackumarke.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-543788f3' 
+2016-08-23 14:16:36,157 INFO bdvmackumarke.local [com.uberforflock.ServerStart] - Server Started 
+2016-08-23 14:17:55,361 INFO bdvmackumarke.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-543788f3' 
+2016-08-23 14:17:58,544 INFO bdvmackumarke.local [com.uberforflock.ServerStart] - Server Started 
+2016-08-23 14:18:02,292 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64 and lat 12.96 
+2016-08-23 14:26:55,262 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64 and lat 12.96 
+2016-08-23 14:26:58,733 INFO bdvmackumarke.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-543788f3' 
+2016-08-23 14:27:01,066 INFO bdvmackumarke.local [com.uberforflock.ServerStart] - Server Started 
+2016-08-23 14:27:11,969 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64 and lat 12.96 
+2016-08-23 14:27:38,881 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - {"times":[{"localized_display_name":"uberPOOL","estimate":60,"display_name":"uberPOOL","product_id":"3eb15796-edd3-4297-80f1-02605442bb9e"},{"localized_display_name":"uberGO","estimate":60,"display_name":"uberGO","product_id":"db6779d6-d8da-479f-8ac7-8068f4dade6f"},{"localized_display_name":"POOL","estimate":60,"display_name":"POOL","product_id":"ed5e79f0-c124-4377-89eb-511cbdeb5fe2"},{"localized_display_name":"uberX","estimate":120,"display_name":"uberX","product_id":"0dfc35e0-b4be-49a1-b1bf-0bc7217e4b58"},{"localized_display_name":"uberXL","estimate":120,"display_name":"uberXL","product_id":"1cfdf145-9e9f-44d6-8f93-976e0252ca8d"}]} 
+2016-08-23 14:36:30,919 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64838457107544 and lat 12.959832941422041 
+2016-08-23 14:36:33,404 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - {"times":[{"localized_display_name":"uberPOOL","estimate":60,"display_name":"uberPOOL","product_id":"3eb15796-edd3-4297-80f1-02605442bb9e"},{"localized_display_name":"uberGO","estimate":60,"display_name":"uberGO","product_id":"db6779d6-d8da-479f-8ac7-8068f4dade6f"},{"localized_display_name":"POOL","estimate":60,"display_name":"POOL","product_id":"ed5e79f0-c124-4377-89eb-511cbdeb5fe2"},{"localized_display_name":"uberX","estimate":60,"display_name":"uberX","product_id":"0dfc35e0-b4be-49a1-b1bf-0bc7217e4b58"}]} 
+2016-08-23 15:14:58,915 INFO bdvmackumarke.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-543788f3' 
+2016-08-23 15:15:01,025 INFO bdvmackumarke.local [com.uberforflock.ServerStart] - Server Started 
+2016-08-23 15:15:59,981 INFO bdvmackumarke.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-543788f3' 
+2016-08-23 15:16:01,980 INFO bdvmackumarke.local [com.uberforflock.ServerStart] - Server Started 
+2016-08-23 15:17:12,372 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64 and lat 12.96 
+2016-08-23 15:17:16,062 ERROR bdvmackumarke.local [com.uberforflock.controller.UberController] - Exception getting availability for flockEvent 
+2016-08-23 15:17:39,775 INFO bdvmackumarke.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-543788f3' 
+2016-08-23 15:17:42,898 INFO bdvmackumarke.local [com.uberforflock.ServerStart] - Server Started 
+2016-08-23 15:18:36,667 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64 and lat 12.96 
+2016-08-23 15:19:30,745 ERROR bdvmackumarke.local [com.uberforflock.controller.UberController] - Exception getting availability for flockEvent 

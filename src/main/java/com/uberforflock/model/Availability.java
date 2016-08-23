@@ -3,17 +3,14 @@ package com.uberforflock.model;
 import java.util.List;
 
 public class Availability {
-    private Times times;
 
-    public Times getTimes() {
+    private List<Times> times;
+
+    public List<Times> getTimes() {
         return times;
     }
 
     private class Times{
-        private List<Product> productsList;
-    }
-
-    private class Product{
         private String localized_display_name;
         private int estimate;
         private String displayName;
