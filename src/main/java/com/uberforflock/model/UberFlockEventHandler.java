@@ -3,6 +3,8 @@ package com.uberforflock.model;
 import co.flock.www.FlockEventsHandler;
 import co.flock.www.model.flockevents.*;
 import com.uberforflock.dao.UserTokenDao;
+import com.uberforflock.service.MessageService;
+import com.uberforflock.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,14 @@ import org.springframework.stereotype.Service;
 public class UberFlockEventHandler implements FlockEventsHandler {
 
     @Autowired
-    UserTokenDao userTokenDao;
+    private UserTokenDao userTokenDao;
+
+    @Autowired
+    private RideService rideService;
+
+    @Autowired
+    private MessageService messageService;
+
     @Override
     public void onAppInstall(AppInstall appInstall) {
             userTokenDao.addUserToken(appInstall.getUserId(),appInstall.getUserToken());
@@ -45,7 +54,16 @@ public class UberFlockEventHandler implements FlockEventsHandler {
     }
 
     @Override
-    public void onPressButton(PressButton pressButton) {
+    public void onPressButton(PressButton pressButton){
+        String productId = "";
+        String start_latitude = "12.98";
+        String start_longitude = "77.64";
+        Ride ride = rideService.bookRide(productId, start_latitude, start_longitude);
+        try {
+            messageService.sendRideMessage(ride, pressButton);
+        }catch (Exception e){
+            
+        }
     }
 
     @Override

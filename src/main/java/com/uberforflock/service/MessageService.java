@@ -9,6 +9,8 @@ import co.flock.www.model.messages.Message;
 import com.uberforflock.dao.UserTokenDao;
 import com.uberforflock.model.Availability;
 import com.uberforflock.model.Ride;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +24,19 @@ public class MessageService {
 
     @Autowired
     private UserTokenDao userTokenDao;
+    private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
 
-    private void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception{
+    public void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception {
         String userToken = userTokenDao.getUserToken(pressButton.getUserId());
-        Message message = new Message(pressButton.getChat(),"Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " +  ride.getVehicle().getLicense_plate() + ") is arriving at your location in " + ride.getDriver().getEta() + " minutes. Enjoy the ride !");
-        FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
+        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() + ") is arriving at your location in " + ride.getDriver().getEta() + " minutes. Enjoy the ride !");
+        FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
         String id = flockApiClient.chatSendMessage(new FlockMessage(message));
     }
 
-    public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand) throws  Exception{
+
+
+
+    public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand){
         String userToken = userTokenDao.getUserToken(slashCommand.getUserId());
         FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
 
@@ -84,6 +90,10 @@ public class MessageService {
 
         }
 
-        String id = flockApiClient.chatSendMessage(new FlockMessage(message));
+        try {
+            String id = flockApiClient.chatSendMessage(new FlockMessage(message));
+        }catch (Exception e){
+            logger.error("Error sending message", e);
+        }
     }
 }

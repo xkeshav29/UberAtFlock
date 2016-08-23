@@ -9,12 +9,8 @@ import com.google.gson.Gson;
 import com.uberforflock.dao.OauthCredentialDao;
 import com.uberforflock.model.Availability;
 import com.uberforflock.model.OauthCredential;
-import com.uberforflock.model.Ride;
 import com.uberforflock.model.UberFlockEventHandler;
-import com.uberforflock.service.CsrfTokenService;
-import com.uberforflock.service.MessageService;
-import com.uberforflock.service.Oauth2TokenService;
-import com.uberforflock.service.UserAuthService;
+import com.uberforflock.service.*;
 import com.uberforflock.util.Constants;
 import com.uberforflock.util.Util;
 import org.apache.http.NameValuePair;
@@ -38,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 /**
@@ -71,6 +68,9 @@ public class UberController {
 
     @Autowired
     private UberFlockEventHandler eventHandler;
+
+    @Autowired
+    private RideService rideService;
 
     @RequestMapping(value = "/authUrl", method = RequestMethod.GET)
     public String getAuthUrl(@RequestParam String userid){
@@ -134,15 +134,19 @@ public class UberController {
     @RequestMapping(value = "/availability", params = {"lon", "lat", "flockEvent"}, method = RequestMethod.GET)
     public void getAvailability(@RequestParam String lon, @RequestParam String lat, @RequestParam String flockEvent){
         try {
-            String url = "https://api.uber.com/v1/estimates/time?start_latitude=" + lat + "&start_longitude=" + lon;
-            logger.info("Getting availability for long {} and lat {}", lon, lat);
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Token " + Constants.SERVER_TOKEN);
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            Availability availability = new Gson().fromJson(response.getBody(), Availability.class);
-            messageService.sendAvailabilityMessage(lat, lon, availability, new Gson().fromJson(flockEvent, SlashCommand.class));
-            logger.info(response.getBody());
+            CompletableFuture.supplyAsync(() -> {
+                String url = "https://api.uber.com/v1/estimates/time?start_latitude=" + lat + "&start_longitude=" + lon;
+                logger.info("Getting availability for long {} and lat {}", lon, lat);
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Authorization", "Token " + Constants.SERVER_TOKEN);
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+                Availability availability = new Gson().fromJson(response.getBody(), Availability.class);
+                messageService.sendAvailabilityMessage(lat, lon, availability, new Gson().fromJson(flockEvent, SlashCommand.class));
+                logger.info(response.getBody());
+                return null;
+            });
+            logger.info("Requesting cab availability.");
         }catch(Exception e){
             logger.error("Exception getting availability for flockEvent {}", flockEvent);
         }
@@ -171,36 +175,7 @@ public class UberController {
     @RequestMapping(value = "/ride", method = RequestMethod.POST)
     public void ride(@RequestParam String product_id, @RequestParam String start_latitude, @RequestParam String start_longitude){
         try {
-            String cabRequestUrl = "https://sandbox-api.uber.com/v1/requests";
-            HttpHeaders headers = new HttpHeaders();
-            Map<String, Object> postpayload = new HashMap<>();
-            postpayload.put("start_latitude", start_latitude);
-            postpayload.put("start_longitude", start_longitude);
-            String accessToken = userAuthService.getAccessToken("kk");
-            headers.set("Authorization", "Bearer " + accessToken);
-            headers.set("Content-Type", "application/json");
-            HttpEntity<String> httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
-
-            logger.info("Requesting product:{}", product_id);
-            ResponseEntity<String> cabResponse = restTemplate.exchange(cabRequestUrl, HttpMethod.POST, httpEntity, String.class, Collections.emptyMap());
-            RideResponse rideResponse = new Gson().fromJson(cabResponse.getBody(), RideResponse.class);
-            logger.info("Cab response:{}", cabResponse.getBody());
-
-            logger.info("Changing state to available for requestid:{}", rideResponse.getRequest_id());
-            String changeStatusUrl = "https://sandbox-api.uber.com/v1/sandbox/requests/" + rideResponse.getRequest_id();
-            postpayload = new HashMap<>();
-            postpayload.put("status", "accepted");
-            httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
-            ResponseEntity<String> stateChangeResponse = restTemplate.exchange(changeStatusUrl, HttpMethod.PUT, httpEntity, String.class, Collections.emptyMap());
-            logger.info("Status change response:{}", stateChangeResponse.getBody());
-
-            logger.info("Fetching request details for requestid:{}", rideResponse.getRequest_id());
-            String statusRequestUrl = "https://sandbox-api.uber.com/v1/requests/" + rideResponse.getRequest_id();
-            postpayload = new HashMap<>();
-            httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
-            ResponseEntity<String> statusResponse = restTemplate.exchange(statusRequestUrl, HttpMethod.GET, httpEntity, String.class, Collections.emptyMap());
-            Ride ride = new Gson().fromJson(statusResponse.getBody(),Ride.class);
-            logger.info("Status fetch response", statusResponse.getBody());
+            rideService.bookRide(product_id, start_latitude, start_longitude);
         }catch (Exception e) {
             logger.error("Error requesting ride", e);
         }
@@ -208,21 +183,15 @@ public class UberController {
 
     @RequestMapping(value = "/flockeventcallback", method = RequestMethod.POST)
     public void flockEventCallbackHandler(HttpServletRequest request) throws Exception{
-        FlockEventsHandlerClient eventsHandlerClient = new FlockEventsHandlerClient(eventHandler, Constants.APP_SECRET);
-        eventsHandlerClient.Handle(request);
-        logger.info("Received flock event");
+       try {
+           FlockEventsHandlerClient eventsHandlerClient = new FlockEventsHandlerClient(eventHandler, Constants.APP_SECRET);
+           eventsHandlerClient.Handle(request);
+           logger.info("Received flock event");
+       }catch (Exception e)
+       {
+           logger.error("Error handling flock event", e);
+       }
     }
 
-    private class RideResponse{
-        private String status;
-        private String request_id;
 
-        public String getStatus() {
-            return status;
-        }
-
-        public String getRequest_id() {
-            return request_id;
-        }
-    }
 }
