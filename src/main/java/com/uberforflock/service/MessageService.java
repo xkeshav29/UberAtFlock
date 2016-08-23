@@ -23,8 +23,11 @@ public class MessageService {
     @Autowired
     private UserTokenDao userTokenDao;
 
-    private void sendRideMessage(Ride ride, PressButton pressButton){
-
+    private void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception{
+        String userToken = userTokenDao.getUserToken(pressButton.getUserId());
+        Message message = new Message(pressButton.getChat(),"Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " +  ride.getVehicle().getLicense_plate() + ") is arriving at your location in " + ride.getDriver().getEta() + " minutes. Enjoy the ride !");
+        FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
+        String id = flockApiClient.chatSendMessage(new FlockMessage(message));
     }
 
     public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand) throws  Exception{
@@ -37,6 +40,7 @@ public class MessageService {
         carImages.put("uberX","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberx.png");
         carImages.put("uberGO","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-ubergo.png");
         carImages.put("uberPOOL","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberpool.png");
+        carImages.put("uberXL","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberxl.png");
         if(availability.getTimes().size() > 0) {
             Attachment[] attachments = new Attachment[1];
             Attachment attachment = new Attachment();

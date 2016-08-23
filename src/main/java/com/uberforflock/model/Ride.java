@@ -29,7 +29,7 @@ public class Ride {
         return surge_multiplier;
     }
 
-    class Driver{
+    public class Driver{
         private String phone_number;
         private String rating;
         private String picture_url;
@@ -57,7 +57,7 @@ public class Ride {
         }
     }
 
-    class Vehicle{
+    public class Vehicle{
 
         private String make;
         private String picture_url;
