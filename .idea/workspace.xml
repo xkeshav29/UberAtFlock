@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f051246-e61a-4ff9-8538-ec3e4b84dc28" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/uberforflock/model/Availability.java" afterPath="$PROJECT_DIR$/src/main/java/com/uberforflock/model/Availability.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/uberforflock/service/MessageService.java" afterPath="$PROJECT_DIR$/src/main/java/com/uberforflock/service/MessageService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/html/map.html" afterPath="$PROJECT_DIR$/src/main/webapp/html/map.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="FlockUber.iws" />
@@ -45,8 +42,8 @@
       <file leaf-file-name="MessageService.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/uberforflock/service/MessageService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.12820514" vertical-offset="299" max-vertical-offset="952">
-              <caret line="30" column="78" selection-start-line="30" selection-start-column="78" selection-end-line="30" selection-end-column="78" />
+            <state vertical-scroll-proportion="0.94188035" vertical-offset="401" max-vertical-offset="1139">
+              <caret line="64" column="9" selection-start-line="64" selection-start-column="9" selection-end-line="64" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -1159,8 +1156,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/uberforflock/service/MessageService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.12820514" vertical-offset="299" max-vertical-offset="952">
-          <caret line="30" column="78" selection-start-line="30" selection-start-column="78" selection-end-line="30" selection-end-column="78" />
+        <state vertical-scroll-proportion="0.94188035" vertical-offset="401" max-vertical-offset="1139">
+          <caret line="64" column="9" selection-start-line="64" selection-start-column="9" selection-end-line="64" selection-end-column="9" />
           <folding />
         </state>
       </provider>
