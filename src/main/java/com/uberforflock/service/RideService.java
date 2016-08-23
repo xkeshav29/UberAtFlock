@@ -50,7 +50,8 @@ public class RideService {
         logger.info("Changing state to available for requestid:{}", rideResponse.getRequest_id());
         String changeStatusUrl = "https://sandbox-api.uber.com/v1/sandbox/requests/" + rideResponse.getRequest_id();
         postpayload = new HashMap<>();
-        postpayload.put("status", "accepted");
+        //postpayload.put("status", "accepted");
+        postpayload.put("status", "arriving");
         httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
         ResponseEntity<String> stateChangeResponse = restTemplate.exchange(changeStatusUrl, HttpMethod.PUT, httpEntity, String.class, Collections.emptyMap());
         logger.info("Status change response:{}", stateChangeResponse.getBody());

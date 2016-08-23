@@ -25,6 +25,10 @@ public class Ride {
         return vehicle;
     }
 
+    public void setEta(int eta){
+        this.getDriver().setEta(eta);
+    }
+
     public int getSurge_multiplier() {
         return surge_multiplier;
     }
@@ -36,6 +40,9 @@ public class Ride {
         private String name;
         private int eta;
 
+        public void setEta(int eta){
+            this.eta = eta;
+        }
         public int getEta() {
             return eta;
         }

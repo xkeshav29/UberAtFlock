@@ -6,6 +6,7 @@ import co.flock.www.model.flockevents.SlashCommand;
 import co.flock.www.model.messages.Attachments.*;
 import co.flock.www.model.messages.FlockMessage;
 import co.flock.www.model.messages.Message;
+import co.flock.www.model.messages.SendAs;
 import com.uberforflock.dao.UserTokenDao;
 import com.uberforflock.model.Availability;
 import com.uberforflock.model.Ride;
@@ -26,9 +27,21 @@ public class MessageService {
     private UserTokenDao userTokenDao;
     private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
 
+    private static SendAs sendAs = new SendAs("Uber App", "http://isource.com/wp-content/uploads/2014/12/UBER-icon.png");
+
     public void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception {
         String userToken = userTokenDao.getUserToken(pressButton.getUserId());
-        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() + ") is arriving at your location in " + ride.getDriver().getEta() + " minutes. Enjoy the ride !");
+        int eta = (int)(Math.random() * 5);
+        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake()
+                + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate()
+                + ") is arriving at your location in "
+                + eta + " minutes. Your driver is "
+                + ride.getDriver().getName()
+                + " and his contact number is "
+                + ride.getDriver().getPhone_number()
+                + ". Enjoy the ride !");
+        message.setSendAs(sendAs);
+        //ride.getDriver().getEta()
         FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
         String id = flockApiClient.chatSendMessage(new FlockMessage(message));
     }
@@ -41,6 +54,7 @@ public class MessageService {
         FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
 
         Message message = new Message(slashCommand.getChat(),availability.getTimes().size() > 0 ? "Which one you would like to book ?" : "Sorry no uber now");
+        message.setSendAs(sendAs);
         message.setAppId("d21753b9-c55b-4514-88a5-5c199c1b7801");
         HashMap<String,String> carImages = new HashMap<>();
         carImages.put("uberX","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberx.png");
