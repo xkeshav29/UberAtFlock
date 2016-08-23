@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://apps-static.flock.co/js-sdk/0.1.0/flock.js"></script>
+    <title>Uber App</title>
+</head>
+<body>
+
+
+<div class="container">
+    <h3>Uber Arrival Update</h3>
+    <div id="statusupdate">
+        <ul class="list-group" id="statusupdateul">
+
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+            var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                        sURLVariables = sPageURL.split('&'),
+                        sParameterName,
+                        i;
+
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : sParameterName[1];
+                    }
+                }
+            };
+            var minutes = 5;
+            $(document).ready(function () {
+                statusUpdate();
+            });
+            function statusUpdate() {
+                $("#statusupdateul").prepend('<li class="list-group-item">Uber is arriving in <span class="badge">' + minutes + ' minutes</span> </li>');
+                minutes--;
+                if (minutes > 0) {
+                    setTimeout(statusUpdate, 1000);
+                } else {
+                    $("#statusupdate").html('<b>Time to go home buddy.</b> <img src="http://i.stack.imgur.com/fHctp.gif" class="img img-responsive"/>');
+                }
+            }
+
+        </script>
+</body>
+</html>

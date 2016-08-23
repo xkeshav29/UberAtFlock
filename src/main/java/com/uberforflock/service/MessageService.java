@@ -31,17 +31,31 @@ public class MessageService {
 
     public void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception {
         String userToken = userTokenDao.getUserToken(pressButton.getUserId());
-        int eta = (int)(Math.random() * 5);
-        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake()
-                + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate()
-                + ") is arriving at your location in "
-                + eta + " minutes. Your driver is "
-                + ride.getDriver().getName()
-                + " and his contact number is "
-                + ride.getDriver().getPhone_number()
-                + ". Enjoy the ride !");
+        int eta = (int) (Math.random() * 4) + 1;
+        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() +") is arriving at your location in" + eta + " minutes. Enjoy the ride !");
+
+        Attachment attachment = new Attachment();
+        attachment.setTitle("Your Uber Today");
+        HtmlView htmlView = new HtmlView();
+        htmlView.setInline("<table width=\"300\"><tbody><tr><td style=\"text-align:center\"><img src=\"" + ride.getDriver().getPicture_url() + "\" alt=\"\" width=\"50\" height=\"50\" /></td><td>" + ride.getDriver().getName() + " (" + ride.getDriver().getPhone_number() + " )</td></tr></tbody></table>");
+        htmlView.setHeight(75);
+        View view = new View();
+        view.setHtml(htmlView);
+        view.setFlockml("<a>" + ride.getDriver().getName() + "</a> (" + ride.getDriver().getPhone_number() + ")");
+        attachment.setViews(view);
+        Button[] buttons = new Button[1];
+        Button button = new Button();
+        button.setName("Show Update");
+        button.setId("btnUpdate");
+        Action openSideBar = new Action();
+        openSideBar.addOpenWidget("https://8271fb9e.ngrok.io/status.html", "sidebar", "modal");
+        button.setAction(openSideBar);
+        buttons[0] = button;
+        attachment.setButtons(buttons);
+        Attachment[] attachments = new Attachment[0];
+        attachments[0] = attachment;
+        message.setAttachments(attachments);
         message.setSendAs(sendAs);
-        //ride.getDriver().getEta()
         FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
         String id = flockApiClient.chatSendMessage(new FlockMessage(message));
     }
