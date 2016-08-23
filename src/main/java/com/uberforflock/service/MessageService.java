@@ -45,7 +45,7 @@ public class MessageService {
         attachment.setViews(view);
         Button[] buttons = new Button[1];
         Button button = new Button();
-        button.setName("Show Update");
+        button.setName("Track your Uber");
         button.setId("btnUpdate");
         Action openSideBar = new Action();
         openSideBar.addOpenWidget("https://8271fb9e.ngrok.io/status.html", "sidebar", "modal");
