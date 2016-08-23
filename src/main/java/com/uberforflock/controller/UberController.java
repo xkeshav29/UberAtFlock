@@ -170,7 +170,7 @@ public class UberController {
     @RequestMapping(value = "/ride", method = RequestMethod.POST)
     public void ride(@RequestParam String product_id, @RequestParam String start_latitude, @RequestParam String start_longitude){
         try {
-            String url = "https://sandbox-api.uber.com/v1/requests";
+            String cabRequestUrl = "https://sandbox-api.uber.com/v1/requests";
             HttpHeaders headers = new HttpHeaders();
             Map<String, Object> postpayload = new HashMap<>();
             postpayload.put("product_id", product_id);
@@ -179,8 +179,25 @@ public class UberController {
             String accessToken = userAuthService.getAccessToken("kk");
             headers.set("Authorization", "Bearer " + accessToken);
             HttpEntity<String> httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class, Collections.emptyMap());
-            logger.info(response.getBody());
+
+            logger.info("Requesting product:{}", product_id);
+            ResponseEntity<String> cabResponse = restTemplate.exchange(cabRequestUrl, HttpMethod.POST, httpEntity, String.class, Collections.emptyMap());
+            RideResponse rideResponse = new Gson().fromJson(cabResponse.getBody(), RideResponse.class);
+            logger.info(cabResponse.getBody());
+
+            logger.info("Changing state to available for requestid:{}", rideResponse.getRequest_id());
+            String changeStatusUrl = "https://sandbox-api.uber.com/v1/sandbox/requests/" + rideResponse.getRequest_id();
+            postpayload = new HashMap<>();
+            postpayload.put("status", "accepted");
+            ResponseEntity<String> stateResponse = restTemplate.exchange(changeStatusUrl, HttpMethod.PUT, httpEntity, String.class, Collections.emptyMap());
+            logger.info(stateResponse.getBody());
+
+            logger.info("Fetching request details for requestid:{}", rideResponse.getRequest_id());
+            String statusRequestUrl = "https://sandbox-api.uber.com/v1/requests/" + rideResponse.getRequest_id();
+            //restTemplate.getForObject(statusRequestUrl, )
+
+
+
         }catch (Exception e) {
             logger.error("Error requesting ride", e);
         }
@@ -193,4 +210,16 @@ public class UberController {
         logger.info("Recieved flock event");
     }
 
+    private class RideResponse{
+        private String status;
+        private String request_id;
+
+        public String getStatus() {
+            return status;
+        }
+
+        public String getRequest_id() {
+            return request_id;
+        }
+    }
 }
