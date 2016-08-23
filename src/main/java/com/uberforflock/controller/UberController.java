@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.uberforflock.dao.OauthCredentialDao;
 import com.uberforflock.model.Availability;
 import com.uberforflock.model.OauthCredential;
+import com.uberforflock.model.Ride;
 import com.uberforflock.model.UberFlockEventHandler;
 import com.uberforflock.service.CsrfTokenService;
 import com.uberforflock.service.MessageService;
@@ -173,30 +174,33 @@ public class UberController {
             String cabRequestUrl = "https://sandbox-api.uber.com/v1/requests";
             HttpHeaders headers = new HttpHeaders();
             Map<String, Object> postpayload = new HashMap<>();
-            postpayload.put("product_id", product_id);
             postpayload.put("start_latitude", start_latitude);
-            postpayload.put("start_longitide", start_longitude);
+            postpayload.put("start_longitude", start_longitude);
             String accessToken = userAuthService.getAccessToken("kk");
             headers.set("Authorization", "Bearer " + accessToken);
+            headers.set("Content-Type", "application/json");
             HttpEntity<String> httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
 
             logger.info("Requesting product:{}", product_id);
             ResponseEntity<String> cabResponse = restTemplate.exchange(cabRequestUrl, HttpMethod.POST, httpEntity, String.class, Collections.emptyMap());
             RideResponse rideResponse = new Gson().fromJson(cabResponse.getBody(), RideResponse.class);
-            logger.info("Cab response:{}",cabResponse.getBody());
+            logger.info("Cab response:{}", cabResponse.getBody());
 
             logger.info("Changing state to available for requestid:{}", rideResponse.getRequest_id());
             String changeStatusUrl = "https://sandbox-api.uber.com/v1/sandbox/requests/" + rideResponse.getRequest_id();
             postpayload = new HashMap<>();
             postpayload.put("status", "accepted");
+            httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
             ResponseEntity<String> stateChangeResponse = restTemplate.exchange(changeStatusUrl, HttpMethod.PUT, httpEntity, String.class, Collections.emptyMap());
             logger.info("Status change response:{}", stateChangeResponse.getBody());
 
             logger.info("Fetching request details for requestid:{}", rideResponse.getRequest_id());
             String statusRequestUrl = "https://sandbox-api.uber.com/v1/requests/" + rideResponse.getRequest_id();
+            postpayload = new HashMap<>();
+            httpEntity = new HttpEntity<>(new Gson().toJson(postpayload), headers);
             ResponseEntity<String> statusResponse = restTemplate.exchange(statusRequestUrl, HttpMethod.GET, httpEntity, String.class, Collections.emptyMap());
+            Ride ride = new Gson().fromJson(statusResponse.getBody(),Ride.class);
             logger.info("Status fetch response", statusResponse.getBody());
-
         }catch (Exception e) {
             logger.error("Error requesting ride", e);
         }
