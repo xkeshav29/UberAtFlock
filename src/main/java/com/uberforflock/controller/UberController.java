@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -174,6 +175,18 @@ public class UberController {
             logger.info(response.getBody());
         }catch(Exception e){
             logger.error("Exception getting availability for flockEvent", e);
+        }
+    }
+
+    @RequestMapping(value = "/doaouth")
+    public ModelAndView doaouth(@RequestParam String flockValidationToken){
+        try {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("oauth");
+            return  modelAndView;
+        }catch(Exception e){
+            logger.error("Exception getting availability for flockEvent", e);
+            throw e;
         }
     }
 

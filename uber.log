@@ -1202,3 +1202,11 @@ Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation: Data too long fo
 2016-08-23 15:17:42,898 INFO bdvmackumarke.local [com.uberforflock.ServerStart] - Server Started 
 2016-08-23 15:18:36,667 INFO bdvmackumarke.local [com.uberforflock.controller.UberController] - Getting availability for long 77.64 and lat 12.96 
 2016-08-23 15:19:30,745 ERROR bdvmackumarke.local [com.uberforflock.controller.UberController] - Exception getting availability for flockEvent 
+2016-08-23 15:29:06,212 INFO bdvmacdeveshk.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-46f5f779' 
+2016-08-23 15:29:08,252 INFO bdvmacdeveshk.local [com.uberforflock.ServerStart] - Server Started 
+2016-08-23 15:33:09,471 INFO bdvmacdeveshk.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-68ceda24' 
+2016-08-23 15:34:18,396 INFO bdvmacdeveshk.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-68ceda24' 
+2016-08-23 15:34:32,339 INFO bdvmacdeveshk.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-68ceda24' 
+2016-08-23 15:34:55,464 INFO bdvmacdeveshk.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-68ceda24' 
+2016-08-23 15:35:24,785 INFO bdvmacdeveshk.local [/] - Initializing Spring FrameworkServlet 'org.springframework.web.servlet.DispatcherServlet-68ceda24' 
+2016-08-23 15:35:27,016 INFO bdvmacdeveshk.local [com.uberforflock.ServerStart] - Server Started 

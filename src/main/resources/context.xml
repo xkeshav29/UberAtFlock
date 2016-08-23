@@ -14,7 +14,12 @@
     <context:annotation-config/>
     <context:component-scan base-package="com.uberforflock"/>
     <context:property-placeholder location="classpath:application.properties"/>
-
+    <mvc:resources mapping="/*.css" location="/styles/"/>
+    <mvc:resources mapping="/*.js" location="/js/"/>
+    <mvc:resources mapping="/*.html" location="/html/"/>
+    <mvc:resources mapping="/*.svg" location="/images/"/>
+    <mvc:resources mapping="/*.png" location="/images/"/>
+    <mvc:resources mapping="/*.xml" location="/WEB-INF/hangout/"/>
     <mvc:annotation-driven/>
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -26,7 +31,9 @@
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
-
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="classpath:webapp/WEB-INF/views/"/>
+    </bean>
     <import resource="database-context.xml"/>
 
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
