@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 /**
  * Created by kumarke on 8/23/16.
  */
@@ -26,6 +28,10 @@ public class MessageService {
 
         Message message = new Message(slashCommand.getChat(),availability.getTimes().size() > 0 ? "Which one you would like to book ?" : "Sorry no uber now");
         message.setAppId("d21753b9-c55b-4514-88a5-5c199c1b7801");
+        HashMap<String,String> carImages = new HashMap<>();
+        carImages.put("uberX","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberx.png");
+        carImages.put("uberGO","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-ubergo.png");
+        carImages.put("uberPOOL","http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberpool.png");
         if(availability.getTimes().size() > 0) {
             Attachment[] attachments = new Attachment[1];
             Attachment attachment = new Attachment();
@@ -37,12 +43,13 @@ public class MessageService {
             sb.append("<div style=\"" + fontStyle + "\">");
             sb.append("<table width=\"350\">");
             for (Availability.Times times : availability.getTimes()) {
-                sb.append("<tr><td style=\"text-align: center;\"><img src=\"http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-ubergo.png\" alt=\"\" width=\"25\" height=\"25\" /></td><td><b>" + times.getLocalized_display_name() + "</b></td> <td>" + (times.getEstimate() / 60) + " minutes</td></tr>");
+                String img = carImages.getOrDefault(times.getLocalized_display_name(),"http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-ubergo.png");
+                sb.append("<tr><td style=\"text-align: center;\"><img src=\"" + img +"\" alt=\"\" width=\"25\" height=\"25\" /></td><td><b>" + times.getLocalized_display_name() + "</b></td> <td>" + (times.getEstimate() / 60) + " minutes</td></tr>");
             }
             sb.append("</table>");
             sb.append("</div>");
             htmlView.setInline(sb.toString());
-            htmlView.setHeight(30 * availability.getTimes().size());
+            htmlView.setHeight(35 * availability.getTimes().size());
             View view = new View();
             view.setHtml(htmlView);
 
