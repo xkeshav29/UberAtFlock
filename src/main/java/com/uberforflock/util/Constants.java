@@ -13,4 +13,6 @@ public class Constants {
     public static final String OAUTH_CALLBACK_URL = "http://localhost:7011/callback";
 
     public static final String TOKEN_URL = "https://login.uber.com/oauth/v2/token";
+
+    public static final String SERVER_TOKEN = "NYHCnf5R8rI6JnU71bdE0_lEJ7KyH5bsgDAUZKqu";
 }

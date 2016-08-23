@@ -1,11 +1,13 @@
 package com.uberforflock.controller;
 
 
+import co.flock.www.model.flockevents.SlashCommand;
 import com.google.gson.Gson;
 import com.uberforflock.dao.OauthCredentialDao;
 import com.uberforflock.model.Availability;
 import com.uberforflock.model.OauthCredential;
 import com.uberforflock.service.CsrfTokenService;
+import com.uberforflock.service.MessageService;
 import com.uberforflock.service.Oauth2TokenService;
 import com.uberforflock.util.Constants;
 import com.uberforflock.util.Util;
@@ -17,6 +19,10 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +53,9 @@ public class UberController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private MessageService messageService;
 
     @RequestMapping(value = "/authUrl", method = RequestMethod.GET)
     public String getAuthUrl(@RequestParam String userid){
@@ -124,11 +133,17 @@ public class UberController {
         logger.info("Oauth completed for user:", user);
     }
 
-    @RequestMapping(value = "/availability", params = {"lon","lat"}, method = RequestMethod.GET)
-    public String getProducts(@RequestParam String lon, @RequestParam String lat){
+    @RequestMapping(value = "/availability", params = {"lon","lat", "flockEvent"}, method = RequestMethod.GET)
+    public String getProducts(@RequestParam String lon, @RequestParam String lat, @RequestParam String flockEvent){
         String url = "https://api.uber.com/v1/estimates/time?start_latitude=" + lat + "&start_longitude=" + lon;
         logger.info("Getting availability for long {} and lat {}", lon, lat);
-        restTemplate.getForObject(url, Availability.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Token " + Constants.SERVER_TOKEN);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        Availability availability = new Gson().fromJson(response.getBody(), Availability.class);
+        messageService.sendAvailabilityMessage(availability,new Gson().fromJson(flockEvent, SlashCommand.class));
+        logger.info(response.getBody());
         return "Longitude:" + lon + " Latitude:" + lat;
     }
 
