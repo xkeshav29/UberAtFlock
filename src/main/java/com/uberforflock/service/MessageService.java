@@ -1,6 +1,7 @@
 package com.uberforflock.service;
 
 import co.flock.www.FlockApiClient;
+import co.flock.www.model.User;
 import co.flock.www.model.flockevents.PressButton;
 import co.flock.www.model.flockevents.SlashCommand;
 import co.flock.www.model.messages.Attachments.*;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * Created by kumarke on 8/23/16.
@@ -25,14 +27,24 @@ public class MessageService {
 
     @Autowired
     private UserTokenDao userTokenDao;
+
     private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
 
     private static SendAs sendAs = new SendAs("Uber App", "http://isource.com/wp-content/uploads/2014/12/UBER-icon.png");
 
     public void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception {
         String userToken = userTokenDao.getUserToken(pressButton.getUserId());
+        FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
+        String userName = "";
+        try {
+            User user = flockApiClient.getUserInfo();
+            userName = user.getFirstName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         int eta = (int) (Math.random() * 4) + 1;
-        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() +") is arriving at your location in " + eta + " minutes. Enjoy the ride !");
+
+        Message message = new Message( pressButton.getChat(), "Hey " + userName +", your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() +") is arriving at your location in " + eta + " minutes. Enjoy the ride !");
 
         Attachment attachment = new Attachment();
         attachment.setTitle("Your Uber Today");
@@ -56,7 +68,7 @@ public class MessageService {
         attachments[0] = attachment;
         message.setAttachments(attachments);
         message.setSendAs(sendAs);
-        FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
+
         String id = flockApiClient.chatSendMessage(new FlockMessage(message));
     }
 
@@ -64,10 +76,23 @@ public class MessageService {
 
 
     public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand){
+
+        availability.setTimes(availability.getTimes()
+                        .stream()
+                        .filter(r -> !r.getLocalized_display_name().equals("POOL"))
+                        .collect(Collectors.toList())
+        );
         String userToken = userTokenDao.getUserToken(slashCommand.getUserId());
         FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
+        String userName = "";
+        try {
+            User user = flockApiClient.getUserInfo();
+            userName = user.getFirstName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Message message = new Message(slashCommand.getChat(),availability.getTimes().size() > 0 ? "Which one you would like to book ?" : "Sorry no uber now");
+        Message message = new Message(slashCommand.getChat(),availability.getTimes().size() > 0 ? "Hey " + userName +", Which Uber you would like to ride?" : "Sorry "  + userName + " there are no cars available at the moment. Please try again after sometime.");
         message.setSendAs(sendAs);
         message.setAppId("d21753b9-c55b-4514-88a5-5c199c1b7801");
         HashMap<String,String> carImages = new HashMap<>();
@@ -80,12 +105,14 @@ public class MessageService {
             Attachment attachment = new Attachment();
             HtmlView htmlView = new HtmlView();
             StringBuilder sb = new StringBuilder();
+            StringBuilder flockML = new StringBuilder();
             String cssBody = "<style type=\"text/css\">.light { color : #737373; } body {margin:0;padding:0;color: #333333;} ul {margin:0;padding: 5px 0 0 20px;} li {line-height:20px} a:link {color: #3B5998;} a:visited {color: #5796DD;} a:hover {color: #3A5998;}</style>";
             String fontStyle = "font-family:Lucida Grande,Arial,sans-serif;font-size:14px;line-height:20px";
             sb.append(cssBody);
             sb.append("<div style=\"" + fontStyle + "\">");
             sb.append("<table width=\"350\">");
             for (Availability.Times times : availability.getTimes()) {
+                flockML.append("<b>" + times.getLocalized_display_name() + "</b> " + times.getEstimate() / 60 + " minutes <br/>");
                 String img = carImages.getOrDefault(times.getLocalized_display_name(),"http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-ubergo.png");
                 sb.append("<tr><td style=\"text-align: center;\"><img src=\"" + img +"\" alt=\"\" width=\"25\" height=\"25\" /></td><td><b>" + times.getLocalized_display_name() + "</b></td> <td>" + (times.getEstimate() / 60) + " minutes</td></tr>");
             }
@@ -95,7 +122,7 @@ public class MessageService {
             htmlView.setHeight(35 * availability.getTimes().size());
             View view = new View();
             view.setHtml(htmlView);
-
+            view.setFlockml(flockML.toString());
             int totalButtons = availability.getTimes().size() > 3 ? 3 : availability.getTimes().size();
 
             Button[] buttons = new Button[totalButtons];
@@ -111,17 +138,29 @@ public class MessageService {
             }
 
             attachment.setButtons(buttons);
-
             attachment.setViews(view);
             attachments[0] = attachment;
             message.setAttachments(attachments);
 
         }
-
         try {
             String id = flockApiClient.chatSendMessage(new FlockMessage(message));
         }catch (Exception e){
             logger.error("Error sending message", e);
         }
     }
+
+    public void sendProcessingMessage(String to, String userId, String processingMessage) {
+        try {
+            Message message = new Message(to, processingMessage);
+            message.setSendAs(sendAs);
+            String userToken = userTokenDao.getUserToken(userId);
+            FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
+            String id = flockApiClient.chatSendMessage(new FlockMessage(message));
+        }catch (Exception e){
+            logger.error("Error sending processing message", e);
+        }
+    }
+
+
 }

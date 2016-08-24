@@ -8,9 +8,9 @@ public class Constants {
 
     public static final String CLIENT_SECRET="EB5PONgMabrbBrAhlc7ldzW4UXA7zE72sdutSCXQ";
 
-    public static final String FLOCK_REDIRECT_URL = "http://localhost:7012/oauthcomplete";
+    public static final String FLOCK_REDIRECT_URL = "https://8271fb9e.ngrok.io/oauthcomplete";
 
-    public static final String OAUTH_CALLBACK_URL = "http://localhost:7012/callback";
+    public static final String OAUTH_CALLBACK_URL = "https://8271fb9e.ngrok.io/callback";
 
     public static final String TOKEN_URL = "https://login.uber.com/oauth/v2/token";
 

@@ -134,6 +134,8 @@ public class UberController {
     @RequestMapping(value = "/availability", params = {"lon", "lat", "flockEvent"}, method = RequestMethod.GET)
     public void getAvailability(@RequestParam String lon, @RequestParam String lat, @RequestParam String flockEvent){
         try {
+            logger.info("Requesting cab availability.");
+            final SlashCommand command = new Gson().fromJson(flockEvent, SlashCommand.class);
             CompletableFuture.supplyAsync(() -> {
                 String url = "https://api.uber.com/v1/estimates/time?start_latitude=" + lat + "&start_longitude=" + lon;
                 logger.info("Getting availability for long {} and lat {}", lon, lat);
@@ -142,11 +144,11 @@ public class UberController {
                 HttpEntity<String> entity = new HttpEntity<>(headers);
                 ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
                 Availability availability = new Gson().fromJson(response.getBody(), Availability.class);
-                messageService.sendAvailabilityMessage(lat, lon, availability, new Gson().fromJson(flockEvent, SlashCommand.class));
+                messageService.sendAvailabilityMessage(lat, lon, availability, command);
                 logger.info(response.getBody());
                 return null;
             });
-            logger.info("Requesting cab availability.");
+            messageService.sendProcessingMessage(command.getChat(), command.getUserId(), "Fetching Ubers around you.");
         }catch(Exception e){
             logger.error("Exception getting availability for flockEvent {}", flockEvent);
         }

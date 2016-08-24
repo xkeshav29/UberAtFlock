@@ -62,6 +62,7 @@ public class UberFlockEventHandler implements FlockEventsHandler {
         String productId = "";
         String start_latitude = "12.98";
         String start_longitude = "77.64";
+        messageService.sendProcessingMessage(pressButton.getChat(), pressButton.getUserId(), "Requesting your Uber.");
         Ride ride = rideService.bookRide(productId, start_latitude, start_longitude);
         try {
             messageService.sendRideMessage(ride, pressButton);

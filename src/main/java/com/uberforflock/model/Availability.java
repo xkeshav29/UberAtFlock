@@ -6,6 +6,10 @@ public class Availability {
 
     private List<Times> times;
 
+    public void setTimes(List<Times> times) {
+        this.times = times;
+    }
+
     public List<Times> getTimes() {
         return times;
     }
