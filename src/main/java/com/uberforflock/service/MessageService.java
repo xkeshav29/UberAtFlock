@@ -32,7 +32,7 @@ public class MessageService {
     public void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception {
         String userToken = userTokenDao.getUserToken(pressButton.getUserId());
         int eta = (int) (Math.random() * 4) + 1;
-        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() +") is arriving at your location in" + eta + " minutes. Enjoy the ride !");
+        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() +") is arriving at your location in " + eta + " minutes. Enjoy the ride !");
 
         Attachment attachment = new Attachment();
         attachment.setTitle("Your Uber Today");
@@ -48,11 +48,11 @@ public class MessageService {
         button.setName("Track your Uber");
         button.setId("btnUpdate");
         Action openSideBar = new Action();
-        openSideBar.addOpenWidget("https://8271fb9e.ngrok.io/status.html", "sidebar", "modal");
+        openSideBar.addOpenWidget("https://8271fb9e.ngrok.io/track.html", "sidebar", "modal");
         button.setAction(openSideBar);
         buttons[0] = button;
         attachment.setButtons(buttons);
-        Attachment[] attachments = new Attachment[0];
+        Attachment[] attachments = new Attachment[1];
         attachments[0] = attachment;
         message.setAttachments(attachments);
         message.setSendAs(sendAs);

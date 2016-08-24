@@ -5,6 +5,8 @@ import co.flock.www.model.flockevents.*;
 import com.uberforflock.dao.UserTokenDao;
 import com.uberforflock.service.MessageService;
 import com.uberforflock.service.RideService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UberFlockEventHandler implements FlockEventsHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(FlockEventsHandler.class);
 
     @Autowired
     private UserTokenDao userTokenDao;
@@ -62,7 +66,7 @@ public class UberFlockEventHandler implements FlockEventsHandler {
         try {
             messageService.sendRideMessage(ride, pressButton);
         }catch (Exception e){
-            
+            logger.error("Error sending ride message", e);
         }
     }
 
