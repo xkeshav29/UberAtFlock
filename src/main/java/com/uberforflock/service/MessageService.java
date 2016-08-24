@@ -1,6 +1,7 @@
 package com.uberforflock.service;
 
 import co.flock.www.FlockApiClient;
+import co.flock.www.model.User;
 import co.flock.www.model.flockevents.PressButton;
 import co.flock.www.model.flockevents.SlashCommand;
 import co.flock.www.model.messages.Attachments.*;
@@ -31,8 +32,16 @@ public class MessageService {
 
     public void sendRideMessage(Ride ride, PressButton pressButton) throws  Exception {
         String userToken = userTokenDao.getUserToken(pressButton.getUserId());
+        FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
+        String userName = "";
+        try {
+            User user = flockApiClient.getUserInfo();
+            userName = user.getFirstName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         int eta = (int) (Math.random() * 4) + 1;
-        Message message = new Message(pressButton.getChat(), "Your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() +") is arriving at your location in" + eta + " minutes. Enjoy the ride !");
+        Message message = new Message(pressButton.getChat(), userName +" your Uber (" + ride.getVehicle().getMake() + " " + ride.getVehicle().getModel() + " - " + ride.getVehicle().getLicense_plate() +") is arriving at your location in" + eta + " minutes. Enjoy the ride !");
 
         Attachment attachment = new Attachment();
         attachment.setTitle("Your Uber Today");
@@ -56,7 +65,7 @@ public class MessageService {
         attachments[0] = attachment;
         message.setAttachments(attachments);
         message.setSendAs(sendAs);
-        FlockApiClient flockApiClient = new FlockApiClient(userToken, false);
+
         String id = flockApiClient.chatSendMessage(new FlockMessage(message));
     }
 
@@ -66,8 +75,15 @@ public class MessageService {
     public void sendAvailabilityMessage(String lat, String lon, Availability availability, SlashCommand slashCommand){
         String userToken = userTokenDao.getUserToken(slashCommand.getUserId());
         FlockApiClient flockApiClient = new FlockApiClient(userToken,false);
+        String userName = "";
+        try {
+            User user = flockApiClient.getUserInfo();
+            userName = user.getFirstName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Message message = new Message(slashCommand.getChat(),availability.getTimes().size() > 0 ? "Which one you would like to book ?" : "Sorry no uber now");
+        Message message = new Message(slashCommand.getChat(),availability.getTimes().size() > 0 ? "Hey " + userName +", Which one you would like to book ?" : "Sorry "  + userName + " there are no cars available at the moment. Please try again after sometime.");
         message.setSendAs(sendAs);
         message.setAppId("d21753b9-c55b-4514-88a5-5c199c1b7801");
         HashMap<String,String> carImages = new HashMap<>();
